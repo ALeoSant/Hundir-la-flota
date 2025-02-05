@@ -12,7 +12,7 @@ public class Main {
 
     //COMO USAR LAS CONSTANTES
     //System.out.print(ANSI_RED + "HOLA" + ANSI_RESET);
-
+    //Hola mundo
 
     public static void main(String[] args) {
         int N=8;
