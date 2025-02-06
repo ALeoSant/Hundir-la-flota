@@ -12,7 +12,7 @@ public class Main {
 
     //COMO USAR LAS CONSTANTES
     //System.out.print(ANSI_RED + "HOLA" + ANSI_RESET);
-    //Hola mundo
+
 
     public static void main(String[] args) {
         int N=8;
@@ -22,9 +22,10 @@ public class Main {
         int barcos[] = {4,3,3,2,2,2,1,1,1,1};
 
         ponAgua(tablero1,tablero2);
-        coordenadaAleatoria(N,coordenada);
-        colocarBarcos(tablero1,coordenada,barcos);
-        colocarBarcos(tablero2,coordenada,barcos);
+        mostrarTablero(tablero1);
+        colocarBarcos(tablero1,coordenada,barcos,N);
+        mostrarTablero(tablero1);
+        colocarBarcos(tablero2,coordenada,barcos,N);
         mostrarTablero(tablero1);
         mostrarTablero(tablero2);
 
@@ -54,8 +55,43 @@ public class Main {
 
 
     //COLOCAR ALEATORIAMENTE LOS BARCOS
-    public static void colocarBarcos(int [][] tablero, int [] coordenada, int [] barcos){
+    public static void colocarBarcos(int [][] tablero, int [] coordenada, int [] barcos, int N){
+        int tamaño;
+        for(int i=0;i<tablero.length;i++) {
+            boolean colocado = false;
+            while (!colocado) {
+                coordenadaAleatoria(N, coordenada);
+                tamaño = barcos[i];
+                if (sePuede(tablero, coordenada, tamaño, N))
+                    for(int j=0;j<tamaño;j++){
+                        tablero[coordenada[0]][coordenada[1]+j]=1;
+                        colocado=true;
+                    }
 
+            }
+        }
+    }
+
+    //SE PEUDE COLOCAR BARCO
+    public static boolean sePuede(int [][] tablero, int [] coordenada, int tamaño, int N){
+        //Comprueba que no se salga del tablero
+        if(coordenada[0]+tamaño>=N) return false;
+        if(coordenada[1]+tamaño>=N) return false;
+
+        //Comprueba que no haya barcos cerca por columnas
+        for(int i=coordenada[0]-1;i<=coordenada[0]+tamaño;i++){
+            for(int j=coordenada[1]-1;j<coordenada[1]+1;j++){
+                if(tablero[i][j]==1) return false;
+            }
+        }
+
+        //Comprueba que no haya barcos cerca por filas
+        for(int i=coordenada[0]-1;i<=coordenada[0]+1;i++){
+            for(int j=coordenada[1]-1;j<coordenada[1]+tamaño;j++){
+                if(tablero[i][j]==1) return false;
+            }
+        }
+        return true;
     }
 
     //GENERA COORDENADA ALEATORIAS(PARA ATAQUE Y COLOCACIÓN)
