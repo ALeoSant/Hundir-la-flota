@@ -3,14 +3,14 @@ import java.util.Scanner;
 public class Main {
 
     //CONSTANTES DE COLORES
-    //public static final String ANSI_RESET = "\u001B[0m";
-    //public static final String ANSI_BLACK = "\u001B[30m";
-    //public static final String ANSI_RED = "\u001B[31m";
-    //public static final String ANSI_GREEN = "\u001B[32m";
-    //public static final String ANSI_YELLOW = "\u001B[33m";
-    //public static final String ANSI_BLUE = "\u001B[34m";
-    //public static final String ANSI_PURPLE = "\u001B[35m";
-    //public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
 
     //COMO USAR LAS CONSTANTES
     //System.out.print(ANSI_RED + "HOLA" + ANSI_RESET);
@@ -62,12 +62,22 @@ public class Main {
 
     //MUESTRA AMBOS TABLEROS A LA VEZ
     public static void imprimeTableros(int [][] tablero1, int [][] tablero2){
-        System.out.println("   TU TABLERO          TU RIVAL");
+        System.out.println(ANSI_RED+"   TU TABLERO          TU RIVAL"+ANSI_RESET);
         for(int i=0; i<N;i++){
-            if(i<N) for (int j = 0; j < N; j++) System.out.print(tablero1[i][j] + " ");
+            if(i<N)
+                for (int j = 0; j < N; j++) {
+                    if (tablero1[i][j] == 0)
+                        System.out.print(ANSI_BLUE + "A " + ANSI_RESET);
+                    else System.out.print(ANSI_YELLOW + "B " + ANSI_RESET);
+                }
             else for(int j=0;j<N;j++) System.out.print(" ");
-            System.out.print(" |  ");
-            if(i<N) for(int j=0;j<N;j++) System.out.print(tablero2[i][j]+" ");
+            System.out.print(ANSI_RED+" |  "+ANSI_RESET);
+            if(i<N)
+                for(int j=0;j<N;j++) {
+                    if (tablero2[i][j] == 0)
+                        System.out.print(ANSI_BLUE + "A " + ANSI_RESET);
+                    else System.out.print(ANSI_YELLOW + "B " + ANSI_RESET);
+                }
             System.out.println();
         }
     }
@@ -141,7 +151,7 @@ public class Main {
     }
 
     public static void jugar(int [][]tablero1, int [][]tablero2,int []coordenada){
-        boolean correcto=false, gana=false, turno=true, acierto=true;
+        boolean gana=false, turno=true;
         while(!gana) {
             if(turno) {
                 turno=juegaJugador(coordenada, tablero2);
@@ -162,19 +172,19 @@ public class Main {
     //PIDE LAS COORDENADAS AL JUGADOR PARA ACERTAR BARCOS
     public static void pedirBarco(int []coordenada){
         Scanner teclado= new Scanner(System.in);
-        System.out.println("Escribe la coordenada x de donde quieres disparar [0-7]:");
+        System.out.println(ANSI_GREEN+"Escribe la coordenada x de donde quieres disparar [0-7]:"+ANSI_RESET);
         coordenada[0] = teclado.nextInt();
-        System.out.println("Escribe la coordenada y de donde quieres disparar [0-7]:");
+        System.out.println(ANSI_GREEN+"Escribe la coordenada y de donde quieres disparar [0-7]:"+ANSI_RESET);
         coordenada[1] = teclado.nextInt();
     }
 
     //SI EL DISPARO ES AGUA O TOCA UN BARCO
     public static boolean tocaBarco(int [][] tablero, int [] coordenada){
         if(tablero[coordenada[0]][coordenada[1]]==0){
-            System.out.println("AGUA");
+            System.out.println(ANSI_GREEN+"AGUA"+ANSI_RESET);
             return false;
         }else{
-            System.out.println("TOCADO");
+            System.out.println(ANSI_GREEN+"TOCADO"+ANSI_RESET);
             tablero[coordenada[0]][coordenada[1]]=0;
             return true;
         }
@@ -184,11 +194,11 @@ public class Main {
     public static boolean juegaJugador(int []coordenada, int [][]tablero){
         boolean acierto=true, correcto=false,gana=false;
         while(acierto && !gana) {
-            System.out.println("TURNO DEL JUGADOR:");
+            System.out.println(ANSI_PURPLE+"TURNO DEL JUGADOR:"+ANSI_RESET);
             pedirBarco(coordenada);
             correcto=estaEnRango(coordenada[0],coordenada[1]);
             if(!correcto){
-                System.out.println("Esa coordenada no está dentro del tablero.");
+                System.out.println(ANSI_GREEN+"Esa coordenada no está dentro del tablero."+ANSI_RESET);
             }else{
                 acierto=tocaBarco(tablero,coordenada);
                 Esperar(3);
@@ -207,10 +217,10 @@ public class Main {
         boolean acierto=true, gana=false;
         while(acierto&&!gana) {
             Esperar(1);
-            System.out.println("TURNO DE LA MÁQUINA:");
+            System.out.println(ANSI_PURPLE+"TURNO DE LA MÁQUINA:"+ANSI_RESET);
             coordenadaAleatoria(coordenada);
             Esperar(1);
-            System.out.println("LA MÁQUINA ELIGE LA POSICIÓN: ("+coordenada[0]+","+coordenada[1]+")");
+            System.out.println(ANSI_GREEN+"LA MÁQUINA ELIGE LA POSICIÓN: ("+coordenada[0]+","+coordenada[1]+")"+ANSI_RESET);
             Esperar(1);
             acierto=tocaBarco(tablero,coordenada);
             if(acierto){
