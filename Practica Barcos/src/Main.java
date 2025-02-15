@@ -12,17 +12,19 @@ public class Main {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
 
-    //COMO USAR LAS CONSTANTES
-    //System.out.print(ANSI_RED + "HOLA" + ANSI_RESET);
-    static int N=8;
+    //VARIABLES GLOBALES
+    private static int N=8;
+    private static int tablero1[][] = new int[N][N];
+    private static int tablero2[][] = new int[N][N];
+    private static int tableroMaquina[][] = new int[N][N];
+    private static int tableroUsuario[][] = new int[N][N];
+    private static int coordenada[] = new int[2];
+    private static int barcos[] = {4,3,3,2,2,2,1,1,1,1};
+    // ARRAY DE BARCOS PARA PRUEBAS XD
+    //private static int barcos[] = {1};
+
 
     public static void main(String[] args) {
-        int tablero1[][] = new int[N][N];
-        int tablero2[][] = new int[N][N];
-        int coordenada[] = new int[2];
-        int barcos[] = {4,3,3,2,2,2,1,1,1,1};
-        // ARRAY DE BARCOS PARA PRUEBAS XD
-        // int barcos[] = {1};
         boolean perfe=false;
         while (!perfe) {
             ponAgua(tablero1, tablero2);
@@ -32,7 +34,8 @@ public class Main {
             //mostrarTablero(tablero2);
             if(perfe1 && perfe2) perfe=true;
         }
-        imprimeTableros(tablero1,tablero2);
+        inicializaTableroImp();
+        //imprimeTableros(tablero1,tableroMaquina);
         jugar(tablero1,tablero2,coordenada);
     }
 
@@ -44,6 +47,16 @@ public class Main {
             for(int j=0;j<tableroUsuario.length;j++){
                 tableroUsuario[i][j]=0;
                 tableroCPU[i][j]=0;
+            }
+        }
+    }
+
+    //INICIALIZA LOS TABLEROS CON AGUA
+    public static void inicializaTableroImp(){
+        for(int i=0;i<tableroMaquina.length;i++){
+            for(int j=0;j<tableroMaquina.length;j++){
+                tableroMaquina[i][j]='A';
+                tableroUsuario[i][j]=tablero1[i][j];
             }
         }
     }
@@ -61,22 +74,25 @@ public class Main {
     }
 
     //MUESTRA AMBOS TABLEROS A LA VEZ
-    public static void imprimeTableros(int [][] tablero1, int [][] tablero2){
+    public static void imprimeTableros(){
         System.out.println(ANSI_RED+"   TU TABLERO          TU RIVAL"+ANSI_RESET);
         for(int i=0; i<N;i++){
             if(i<N)
                 for (int j = 0; j < N; j++) {
-                    if (tablero1[i][j] == 0)
+                    if (tableroUsuario[i][j] == 0)
                         System.out.print(ANSI_BLUE + "A " + ANSI_RESET);
-                    else System.out.print(ANSI_YELLOW + "B " + ANSI_RESET);
+                    else if(tableroUsuario[i][j] == 'O') System.out.print(ANSI_YELLOW + "O " + ANSI_RESET);
+                    else if(tableroUsuario[i][j] == 'X') System.out.print(ANSI_RED + "X " + ANSI_RESET);
+                    else System.out.print(ANSI_GREEN + "B " + ANSI_RESET);
                 }
             else for(int j=0;j<N;j++) System.out.print(" ");
             System.out.print(ANSI_RED+" |  "+ANSI_RESET);
             if(i<N)
                 for(int j=0;j<N;j++) {
-                    if (tablero2[i][j] == 0)
+                    if (tableroMaquina[i][j] == 'A')
                         System.out.print(ANSI_BLUE + "A " + ANSI_RESET);
-                    else System.out.print(ANSI_YELLOW + "B " + ANSI_RESET);
+                    else if(tableroMaquina[i][j] == 'O') System.out.print(ANSI_YELLOW + "O " + ANSI_RESET);
+                    else System.out.print(ANSI_RED + "X " + ANSI_RESET);
                 }
             System.out.println();
         }
@@ -156,12 +172,12 @@ public class Main {
             if(turno) {
                 turno=juegaJugador(coordenada, tablero2);
                 gana = hasGanado(tablero2);
-                if(gana) System.out.println("HAS GANADOOOO!!!!!! ENHORABUENA");
+                if(gana) System.out.println(ANSI_RED+"HAS GANADOOOO!!!!!! ENHORABUENA"+ANSI_RESET);
             }
             else{
                 turno=juegaMaquina(coordenada,tablero1);
                 gana=hasGanado(tablero1);
-                if(gana) System.out.println("OHHH HAS PERDIDOO!!!! TE GANO UNA MÁQUINA PRINGADO ;)");
+                if(gana) System.out.println(ANSI_RED+"OHHH HAS PERDIDOO!!!! TE GANO UNA MÁQUINA ;)"+ANSI_RESET);
 
             }
 
@@ -179,13 +195,28 @@ public class Main {
     }
 
     //SI EL DISPARO ES AGUA O TOCA UN BARCO
-    public static boolean tocaBarco(int [][] tablero, int [] coordenada){
-        if(tablero[coordenada[0]][coordenada[1]]==0){
+    public static boolean tocaBarco(){
+        if(tablero2[coordenada[0]][coordenada[1]]==0){
             System.out.println(ANSI_GREEN+"AGUA"+ANSI_RESET);
+            tableroMaquina[coordenada[0]][coordenada[1]]='O';
             return false;
         }else{
             System.out.println(ANSI_GREEN+"TOCADO"+ANSI_RESET);
-            tablero[coordenada[0]][coordenada[1]]=0;
+            tablero2[coordenada[0]][coordenada[1]]=0;
+            tableroMaquina[coordenada[0]][coordenada[1]]='X';
+            return true;
+        }
+    }
+
+    public static boolean tocaBarcoMaq(){
+        if(tablero1[coordenada[0]][coordenada[1]]==0){
+            System.out.println(ANSI_GREEN+"AGUA"+ANSI_RESET);
+            tableroUsuario[coordenada[0]][coordenada[1]]='O';
+            return false;
+        }else{
+            System.out.println(ANSI_GREEN+"TOCADO"+ANSI_RESET);
+            tablero1[coordenada[0]][coordenada[1]]=0;
+            tableroUsuario[coordenada[0]][coordenada[1]]='X';
             return true;
         }
     }
@@ -194,16 +225,17 @@ public class Main {
     public static boolean juegaJugador(int []coordenada, int [][]tablero){
         boolean acierto=true, correcto=false,gana=false;
         while(acierto && !gana) {
+            imprimeTableros();
             System.out.println(ANSI_PURPLE+"TURNO DEL JUGADOR:"+ANSI_RESET);
             pedirBarco(coordenada);
             correcto=estaEnRango(coordenada[0],coordenada[1]);
             if(!correcto){
                 System.out.println(ANSI_GREEN+"Esa coordenada no está dentro del tablero."+ANSI_RESET);
             }else{
-                acierto=tocaBarco(tablero,coordenada);
+                acierto=tocaBarco();
                 Esperar(3);
                 //LimpiarPantalla();
-                //limpiando();
+                limpiando();
                 if(acierto){
                     gana=hasGanado(tablero);
                 }
@@ -222,7 +254,7 @@ public class Main {
             Esperar(1);
             System.out.println(ANSI_GREEN+"LA MÁQUINA ELIGE LA POSICIÓN: ("+coordenada[0]+","+coordenada[1]+")"+ANSI_RESET);
             Esperar(1);
-            acierto=tocaBarco(tablero,coordenada);
+            acierto=tocaBarcoMaq();
             if(acierto){
                 gana=hasGanado(tablero);
             }
@@ -235,7 +267,7 @@ public class Main {
     public static boolean hasGanado(int [][]tablero){
         for(int i=0;i<tablero.length;i++){
             for(int j=0;j<tablero.length;j++){
-                if(tablero[i][j]!=0){
+                if(tablero[i][j]!=0 ){
                     return false;
                 }
             }
