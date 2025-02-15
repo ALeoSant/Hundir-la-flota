@@ -138,7 +138,6 @@ public class Main {
         return true;
     }
 
-
     //COLOCA EL BARCO HACIA LA DERECHA
     public static boolean colocarDer(int tamaño, int [][] tablero, int [] coordenada){
         for (int j = 0; j < tamaño; j++) {
@@ -203,9 +202,6 @@ public class Main {
             return false;
         }else{
             System.out.println(ANSI_GREEN+"TOCADO"+ANSI_RESET);
-            boolean hundido=false;
-            hundido=hundido(tablero2);
-            if(hundido) System.out.println(ANSI_GREEN+"HUNDIDO"+ANSI_RESET);
             tablero2[coordenada[0]][coordenada[1]]=0;
             tableroMaquina[coordenada[0]][coordenada[1]]='X';
             return true;
@@ -219,9 +215,6 @@ public class Main {
             return false;
         }else{
             System.out.println(ANSI_GREEN+"TOCADO"+ANSI_RESET);
-            boolean hundido=false;
-            hundido=hundido(tablero1);
-            if(hundido) System.out.println(ANSI_GREEN+"HUNDIDO"+ANSI_RESET);
             tablero1[coordenada[0]][coordenada[1]]=0;
             tableroUsuario[coordenada[0]][coordenada[1]]='X';
             return true;
@@ -270,58 +263,6 @@ public class Main {
         return true;
     }
 
-    public static boolean hundido(int [][]tablero) {
-        int tamaño=0, cont=0;
-
-        for (int i = 0; i < barcos.length; i++) {
-            if (barcos[i] == tablero[coordenada[0]][coordenada[1]]) {
-                tamaño = barcos[i];
-                break;
-            }
-        }
-
-        for (int j = 1; j < tamaño; j++) {
-            if(estaEnRango(coordenada[0],coordenada[1]+j)) {
-                if (tablero[coordenada[0]][coordenada[1] + j] == tamaño)
-                    return false;
-                else if (tableroMaquina[coordenada[0]][coordenada[1] + j] == 'A')
-                    break;
-                else if (tableroMaquina[coordenada[0]][coordenada[1] + j] == 'X') cont++;
-            }
-        }
-        for (int k = 1; k < tamaño; k++) {
-            if (estaEnRango(coordenada[0], coordenada[1]-k)){
-                if (tablero[coordenada[0]][coordenada[1] - k] == tamaño)
-                    return false;
-                else if (tableroMaquina[coordenada[0]][coordenada[1] - k] == 'A')
-                    break;
-                else if (tableroMaquina[coordenada[0]][coordenada[1] - k] == 'X') cont++;
-            }
-        }
-
-        for (int l = 1; l < tamaño; l++) {
-            if(estaEnRango(coordenada[0]+l,coordenada[1])) {
-                if (tablero[coordenada[0] + l][coordenada[1]] == tamaño)
-                    return false;
-                else if (tableroMaquina[coordenada[0] + l][coordenada[1]] == 'A')
-                    break;
-                else if (tableroMaquina[coordenada[0] + l][coordenada[1]] == 'X') cont++;
-            }
-        }
-
-        for (int z = 1; z < tamaño; z++) {
-            if(estaEnRango(coordenada[0]-z,coordenada[1])) {
-                if (tablero[coordenada[0] - z][coordenada[1]] == tamaño)
-                    return false;
-                else if (tableroMaquina[coordenada[0] - z][coordenada[1]] == 'A')
-                    break;
-                else if(tableroMaquina[coordenada[0] - z][coordenada[1]] == 'X') cont++;
-            }
-        }
-
-        return cont==tamaño-1;
-    }
-
     //COMPRUEBA SI EL JUGADOR HA GANADO
     public static boolean hasGanado(int [][]tablero){
         for(int i=0;i<tablero.length;i++){
@@ -365,6 +306,9 @@ public class Main {
         for(int i=0;i<50;i++)
             System.out.println();
     }
+
+
+
 
 
 }
